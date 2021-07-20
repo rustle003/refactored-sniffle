@@ -1,8 +1,8 @@
 package game
 
+import com.typesafe.config.ConfigFactory
 import game.util.{Pos, Outcome, Editable}
 import math.random
-import scala.collection.script.Index
 
 class SudokuBoard {
     private val board: Array[Array[SudokuCell[Int]]] = Array.ofDim[SudokuCell[Int]](SudokuBoard.boardH,SudokuBoard.boardW)
@@ -44,23 +44,62 @@ object SudokuBoard {
     def main(args: Array[String]): Unit = {
         println("Testing SudokuBoard.scala")
 
-        val sb = new SudokuBoard
+        val sb = SudokuBoard()
         val checkTest: Tuple2[Pos,Int] => Boolean = BoardChecker assertLacks sb
         val checkVal = 23
+        var expectedResult = false
 
         sb `=` (new Pos(8,0)) -> SudokuCell(23, true)
 
-        for(r <- 0 until 9; c <- 0 until 9)
-            sb.insert(c, new Pos(r,c))
-        
-        for(r <- 0 until 9) {
-            for( c <- 0 until 9)
+        for (r <- 0 until SudokuBoard.boardH) {
+            for (c <- 0 until SudokuBoard.boardW)
                 print(sb(r)(c) + " ")
             println()
         }
         
         println("Does the lower left corner not contain " + checkVal + ": " + checkTest {(new Pos(7,2)) -> checkVal})
+        println(if (expectedResult == checkTest {(new Pos(7,2)) -> checkVal}) s"Corner test: [${Console.GREEN}PASS${Console.RESET}]" else s"Corner test: [${Console.RED}FAIL${Console.RESET}]")
+
+        expectedResult = false
+        val result = BoardChecker.isUniqueSequence(sb, Square thatContains {new Pos(0,5)})
+
+        println(s"Checking isUniqueSeq function -> Expected result: $expectedResult -> (actual value): " + result)
+        println(if (expectedResult == result) s"Uniqueness test: [${Console.GREEN}PASS${Console.RESET}]" else s"Uniqueness test: [${Console.RED}FAIL${Console.RESET}]")
     }
+
+    def apply(): SudokuBoard = SudokuBoard(ConfigFactory.load().getInt("defaultFill"))
+
+    def apply(cellsToFill: Int): SudokuBoard = {
+        val sb = new SudokuBoard
+        editableFill(sb)
+        randomImmutableFill(sb, cellsToFill)
+        sb
+    }
+
+    private def randomImmutableFill(sb: SudokuBoard, numberOfCellsToFill: Int): Unit   = {
+        var currentCell = 0
+        while (currentCell < numberOfCellsToFill) {
+            val p = generatePos
+            val v = generateVal
+
+            if ((SudokuBoard cellIsNotImmutable sb -> p) && (BoardChecker assertLacks(sb) apply p -> v)) {
+                currentCell += 1
+                sb.board(p.x)(p.y) = SudokuCell(v,true)
+            }
+        }
+    }
+
+    private def editableFill(sb: SudokuBoard): Unit     = {
+        for (r <- 0 until SudokuBoard.boardH; c <- 0 until SudokuBoard.boardW)
+            if (SudokuBoard cellIsNotImmutable {sb -> new Pos(r, c)})
+                sb.board(r)(c) = SudokuCell(SudokuCell.EMPTY)
+    }
+
+    private def cellIsNotImmutable(bp: Tuple2[SudokuBoard,Pos]): Boolean = bp match {case (sb,p) => !BoardChecker.boardPositionIsImmutable(sb)(p)}
+
+    private def generateNumber: Int => Int  = n => (random * (SudokuBoard.boardH - 1)).toInt + n
+    private def generatePos: Pos            = new Pos(generateNumber apply 0, generateNumber apply 0)
+    private def generateVal: Int            = generateNumber apply 1
 
     private object BoardChecker {
         def boardPositionIsImmutable:
@@ -79,15 +118,12 @@ object SudokuBoard {
             case ((sb, v),ps) => ps forall {(pos: Pos) => sb(pos) != v} 
         }
 
-        // def checkAll: SudokuBoard => Boolean = sb => {
-        //     for(ps <- FullBoard.allPositions)
-                
-        // }
+        def checkAll: SudokuBoard => Boolean = sb => FullBoard.allPositions.forall(ps => isUniqueSequence(sb, ps))
 
-        // def isUniqueSequence(sq: IndexedSeq[Pos]): Boolean = sq match {
-        //     case (n, ns*) => 
-
-        // }
+        def isUniqueSequence(sb: SudokuBoard, sq: IndexedSeq[Pos]): Boolean = sq match {
+            case IndexedSeq(n)          => true
+            case IndexedSeq(n, ns @ _*) => ns.forall(m => sb(n) != sb(m)) && isUniqueSequence(sb, ns.asInstanceOf[IndexedSeq[Pos]])
+        }
     }
 
     private trait SudokuBoardVirtualPartition {
