@@ -10,13 +10,14 @@ object Sudoku {
     def intro: Unit = {
         val resetScreenAndCursor = "\u001B[2J\u001B[0;0H"
         print(resetScreenAndCursor)
-        println("Hello World!");                            Thread.sleep(7000l)
-        io.StdIn.readLine("\n\n\n\n\n\u001B[s[Press Enter to Exit]")
-        println("\u001B[uWell, this is awkward...So...");   Thread.sleep(5000l)
+        println("Hello World!");                            Thread.sleep(3500l)
+        io.StdIn.readLine("\n\n\u001B[s[Press Enter to Exit]")
+        println("\u001B[uWell, this is awkward...So...");   Thread.sleep(2500l)
 
-        val name = io.StdIn.readLine("\n\nWhat is your name?\n")
+        val name = io.StdIn.readLine("\nTell me, what is your name?\n")
 
         println(s"\nNice to meet you ${Console.BOLD}$name${Console.RESET}.")
+        blockingPrint apply 3 -> ""
         print("\n\nMy name is")
 
         blockingPrint apply 7 -> "."

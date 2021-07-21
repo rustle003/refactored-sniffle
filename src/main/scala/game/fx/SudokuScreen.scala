@@ -11,26 +11,35 @@ object SudokuScreen {
     private val o = Console.RESET;      private val O = Console.BOLD
 
     //Top left corner of the board
-    private val (x,y) = (25,10)
+    private val (x,y) = (35,8)
 
     def SudokuBoard: String = {
         var j  = this.y - 1
-        val pxy: Unit => String = _ => {j+=1;"\u001B[" + x + ";" + j + "H"}
+        val pxy: Unit => String = _ => {j+=1;"\u001B[" + j + ";" + x + "H"}
+
+        val b = this.m
+        val W = this.G
         
         s"""
-        ${pxy()}$b$W|---------o---------o---------|$o        
-        ${pxy()}$b$W|$o         $b$W|$o         $b$W|$o         $b$W|$o
-        ${pxy()}$b$W|$o         $b$W|$o         $b$W|$o         $b$W|$o
-        ${pxy()}$b$W|$o         $b$W|$o         $b$W|$o         $b$W|$o
-        ${pxy()}$b$W|---------o---------o---------|$o
-        ${pxy()}$b$W|$o         $b$W|$o         $b$W|$o         $b$W|$o
-        ${pxy()}$b$W|$o         $b$W|$o         $b$W|$o         $b$W|$o
-        ${pxy()}$b$W|$o         $b$W|$o         $b$W|$o         $b$W|$o
-        ${pxy()}$b$W|---------o---------o---------|$o
-        ${pxy()}$b$W|$o         $b$W|$o         $b$W|$o         $b$W|$o
-        ${pxy()}$b$W|$o         $b$W|$o         $b$W|$o         $b$W|$o
-        ${pxy()}$b$W|$o         $b$W|$o         $b$W|$o         $b$W|$o
-        ${pxy()}$b$W|---------o---------o---------|$o
+        ${pxy()}$b$W|-----------o-----------o-----------|$o        
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o    -> Use your ${c}arrow keys$o to move
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o    -> Press ${r}q$o to quit
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
+        ${pxy()}$b$W|-----------o-----------o-----------|$o
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
+        ${pxy()}$b$W|-----------o-----------o-----------|$o
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
+        ${pxy()}$b$W|-----------o-----------o-----------|$o
         """
 
     }
@@ -45,5 +54,10 @@ object SudokuScreen {
         $O$M$w |____/ \\__,_|\\__,_|\\___/|_|\\_\\\\__,_|                                                      $o
         $o
         """
+    }
+
+    def main(args: Array[String]): Unit = {
+        println("Hello from SudokuScreen.")
+        print(SudokuBoard)
     }
 }
