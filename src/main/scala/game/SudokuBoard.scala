@@ -12,9 +12,7 @@ class SudokuBoard {
     private val isValid          = SudokuBoard.BoardChecker.assertLacks(this)
 
     def apply(p: Pos): Int = (this getCell p).value
-
     def apply(x: Int)(y: Int): Int = board(x)(y).value
-
     def ->[T](a: T): Tuple2[SudokuBoard,T] = (this,a)
 
     private def getCell(p: Pos): SudokuCell[Int] = p match {case Pos(x,y) => board(x)(y)}
@@ -32,7 +30,6 @@ class SudokuBoard {
             this `=` (p -> SudokuCell(n))
             Outcome.Successful
         }
-
     }
 
 }
@@ -91,8 +88,7 @@ object SudokuBoard {
 
     private def editableFill(sb: SudokuBoard): Unit     = {
         for (r <- 0 until SudokuBoard.boardH; c <- 0 until SudokuBoard.boardW)
-            if (SudokuBoard cellIsNotImmutable {sb -> new Pos(r, c)})
-                sb.board(r)(c) = SudokuCell(SudokuCell.EMPTY)
+            sb.board(r)(c) = SudokuCell(SudokuCell.EMPTY)
     }
 
     private def cellIsNotImmutable(bp: Tuple2[SudokuBoard,Pos]): Boolean = bp match {case (sb,p) => !BoardChecker.boardPositionIsImmutable(sb)(p)}
@@ -118,7 +114,9 @@ object SudokuBoard {
             case ((sb, v),ps) => ps forall {(pos: Pos) => sb(pos) != v} 
         }
 
-        def checkAll: SudokuBoard => Boolean = sb => FullBoard.allPositions.forall(ps => isUniqueSequence(sb, ps))
+        def checkAll: SudokuBoard => Boolean = sb => SudokuBoard.BoardChecker.isFilledCompletely(sb) && FullBoard.allPositions.forall(ps => isUniqueSequence(sb, ps))
+        
+        def isFilledCompletely: SudokuBoard => Boolean = sb => sb.board.forall(row => row.forall(cell => cell.value != SudokuCell.EMPTY))
 
         def isUniqueSequence(sb: SudokuBoard, sq: IndexedSeq[Pos]): Boolean = sq match {
             case IndexedSeq(n)          => true
@@ -193,4 +191,3 @@ object SudokuBoard {
         def containsAll: IndexedSeq[Pos] = allPositions.flatten[Pos]
     }
 }
-
