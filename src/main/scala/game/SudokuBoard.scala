@@ -11,6 +11,8 @@ class SudokuBoard {
     private val posIsEditable    = SudokuBoard.BoardChecker.boardPositionIsEditable(this)
     private val isValid          = SudokuBoard.BoardChecker.assertLacks(this)
 
+    val checkBoard: Unit => Boolean = _ => SudokuBoard.BoardChecker.checkAll(this)
+
     def apply(p: Pos): Int = (this getCell p).value
     def apply(x: Int)(y: Int): Int = board(x)(y).value
     def ->[T](a: T): Tuple2[SudokuBoard,T] = (this,a)
@@ -31,12 +33,12 @@ class SudokuBoard {
             Outcome.Successful
         }
     }
-
 }
 
 object SudokuBoard {
-    private val boardH = 9
-    private val boardW = 9
+    val boardH = 9
+    val boardW = 9
+    val emptyRep = "_"
 
     def main(args: Array[String]): Unit = {
         println("Testing SudokuBoard.scala")

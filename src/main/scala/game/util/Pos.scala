@@ -1,3 +1,3 @@
 package game.util
 
-case class Pos(x: Int, y: Int)
+case class Pos(var x: Int, var y: Int)
