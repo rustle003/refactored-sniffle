@@ -29,7 +29,7 @@ object Sudoku {
         case SCon.down                  => ss.moveCaretDown
         case SCon.up                    => ss.moveCaretUp
         case 'q'                        => userQuit = true
-        case 'S'                        => gameover = if(ss.callSudokuBoard.checkBoard()) true else {errMessage; false}
+        case 's'                        => gameover = if(ss.callSudokuBoard.checkBoard()) true else {errMessage; false}
         case e if e == '0' || e == '_'  => if (ss.insertVal(0) == Outcome.Successful) SudokuScreen.printAtCaretPosition(ss, '_') 
         case n if('1' to '9').contains(n)   => if(ss.insertVal(n) == Outcome.Successful) SudokuScreen.printAtCaretPosition(ss, n)
         case _                          => ()
