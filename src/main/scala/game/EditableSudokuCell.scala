@@ -17,5 +17,5 @@ class EditableSudokuCell(private var v: Int) extends SudokuCell[Int](v) with Edi
             Outcome.Failure
     }
 
-    override def <=<(va: Int): Boolean = 0 < va && va < 10
+    override def <=<(va: Int): Boolean = 0 <= va && va < 10
 }

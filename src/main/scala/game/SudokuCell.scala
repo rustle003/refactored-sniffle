@@ -7,7 +7,7 @@ abstract class SudokuCell[T](v: T) extends AnyRef with AssignmentLimitation[T] {
 }
 
 object SudokuCell {
-    var EMPTY = 0
+    val EMPTY = 0
 
     def apply(value: Int): SudokuCell[Int] = new EditableSudokuCell(value)
 

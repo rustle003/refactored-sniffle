@@ -27,25 +27,25 @@ class SudokuScreen(private val sBoard: SudokuBoard) {
     def moveCaretRight: Unit = {
         caret = SudokuScreen.guardedSuccessor(caret._1) -> caret._2
         val Pos(r,z) = SudokuScreen.coordinateTransform(caretToPos)
-        SCon.caretTo(r,z); Thread.sleep(300l)
+        SCon.caretTo(r,z); Thread.sleep(25l)
     }
 
     def moveCaretLeft: Unit = {
         caret = SudokuScreen.guardedPredecessor(caret._1) -> caret._2
         val Pos(r,z) = SudokuScreen.coordinateTransform(caretToPos)
-        SCon.caretTo(r,z); Thread.sleep(300l)
+        SCon.caretTo(r,z); Thread.sleep(25l)
     }
 
     def moveCaretDown: Unit = {
         caret = caret._1 -> SudokuScreen.guardedSuccessor(caret._2)
         val Pos(r,z) = SudokuScreen.coordinateTransform(caretToPos)
-        SCon.caretTo(r,z); Thread.sleep(300l)
+        SCon.caretTo(r,z); Thread.sleep(25l)
     }
 
     def moveCaretUp: Unit = {
         caret = caret._1 -> SudokuScreen.guardedPredecessor(caret._2)
         val Pos(r,z) = SudokuScreen.coordinateTransform(caretToPos)
-        SCon.caretTo(r,z); Thread.sleep(300l)
+        SCon.caretTo(r,z); Thread.sleep(25l)
     }
 }
 
@@ -87,7 +87,7 @@ object SudokuScreen {
         ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
         ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o    -> Use your ${c}arrow keys$o to move
         ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
-        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o    -> Press ${g}S$o to submit your sudoku
+        ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o    -> Press ${g}s$o to submit your sudoku
         ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o
         ${pxy()}$b$W|-----------o-----------o-----------|$o
         ${pxy()}$b$W|$o           $b$W|$o           $b$W|$o           $b$W|$o    -> Press ${r}q$o to quit

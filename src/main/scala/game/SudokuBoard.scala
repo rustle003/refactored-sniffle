@@ -76,15 +76,19 @@ object SudokuBoard {
     }
 
     private def randomImmutableFill(sb: SudokuBoard, numberOfCellsToFill: Int): Unit   = {
-        var currentCell = 0
-        while (currentCell < numberOfCellsToFill) {
-            val p = generatePos
-            val v = generateVal
+        if (numberOfCellsToFill > 0) {
+            val ecs = getEditableCells apply sb
+            val checkValid: Tuple2[Pos,Int] => Boolean = SudokuBoard.BoardChecker.assertLacks(sb)
+            val posSelect = generateNumber apply 0 -> (ecs.length - 1)
 
-            if ((SudokuBoard cellIsNotImmutable sb -> p) && (BoardChecker assertLacks(sb) apply p -> v)) {
-                currentCell += 1
-                sb.board(p.x)(p.y) = SudokuCell(v,true)
+            while(cellIsNotImmutable(sb -> ecs(posSelect))) {
+                val value = generateVal
+
+                if(checkValid apply ecs(posSelect) -> value)
+                    sb.board(ecs(posSelect).x)(ecs(posSelect).y) = SudokuCell(value, true)
             }
+
+            randomImmutableFill(sb, numberOfCellsToFill - 1)
         }
     }
 
@@ -93,11 +97,21 @@ object SudokuBoard {
             sb.board(r)(c) = SudokuCell(SudokuCell.EMPTY)
     }
 
+    private def getEditableCells: SudokuBoard => IndexedSeq[Pos] = sb => {
+        for (r <-0 until SudokuBoard.boardH; c <- 0 until SudokuBoard.boardW if SudokuBoard cellIsNotImmutable sb -> (new Pos(r,c)))
+            yield new Pos(r,c)
+    }
+
     private def cellIsNotImmutable(bp: Tuple2[SudokuBoard,Pos]): Boolean = bp match {case (sb,p) => !BoardChecker.boardPositionIsImmutable(sb)(p)}
 
-    private def generateNumber: Int => Int  = n => (random * (SudokuBoard.boardH - 1)).toInt + n
-    private def generatePos: Pos            = new Pos(generateNumber apply 0, generateNumber apply 0)
-    private def generateVal: Int            = generateNumber apply 1
+    private def generateNumber: Tuple2[Int,Int] => Int = se => se match {
+        case (start, end) =>
+            ((random * 10 * (end + 1) - 1).toInt + start * 10) / 10
+    }
+
+    private def generateSBNumber: Int => Int  = n => generateNumber apply n -> (SudokuBoard.boardH - 1)
+    private def generatePos: Pos            = new Pos(generateSBNumber apply 0, generateSBNumber apply 0)
+    private def generateVal: Int            = generateSBNumber apply 1
 
     private object BoardChecker {
         def boardPositionIsImmutable:
